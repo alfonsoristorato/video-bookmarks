@@ -1,2 +1,3 @@
 rootProject.name = 'video-bookmarks'
+include 'bookmarks-producer'
 
