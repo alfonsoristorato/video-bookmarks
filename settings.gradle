@@ -1,3 +1,16 @@
 rootProject.name = 'video-bookmarks'
 include 'bookmarks-producer'
+include 'common'
+include 'common:kafka'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        serviceLibs {
+            from(files('service.libs.versions.toml'))
+        }
+        testLibs {
+            from(files('test.libs.versions.toml'))
+        }
+    }
+}
 

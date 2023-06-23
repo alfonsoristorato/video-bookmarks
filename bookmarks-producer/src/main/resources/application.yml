@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:29092, localhost:39092
+    producer:
+      properties:
+        "[max.block.ms]": "10000"
+management:
+  endpoint:
+    health:
+      show-components: always
+  health:
+    diskspace:
+      enabled: false
+    ping:
+      enabled: false

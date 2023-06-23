@@ -4,16 +4,14 @@ plugins {
 }
 
 dependencies {
-    implementation project(":common:kafka")
-
     implementation serviceLibs.spring.boot.starter
     implementation serviceLibs.spring.boot.starter.actuator
     implementation serviceLibs.spring.boot.starter.web
     implementation serviceLibs.spring.kafka
     implementation serviceLibs.reactor
 
+    testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test
-
 }
 
 test {

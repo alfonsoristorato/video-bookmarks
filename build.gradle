@@ -1,8 +1,6 @@
 allprojects {
     group = 'com.alfonsoristorato'
     buildscript {
-
-
         repositories {
             mavenCentral()
         }
@@ -11,7 +9,11 @@ allprojects {
     repositories {
         mavenCentral()
     }
+}
 
+subprojects {
+    apply plugin: 'java'
 
-
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
