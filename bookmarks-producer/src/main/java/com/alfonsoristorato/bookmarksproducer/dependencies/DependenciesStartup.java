@@ -23,7 +23,7 @@ public class DependenciesStartup {
     public void onStartup() {
         Health kafkaHealth = kafkaHealthIndicator.health().block();
         if (Objects.requireNonNull(kafkaHealth).getStatus().equals(Status.DOWN)) {
-            throw new RuntimeException("Kafka is down");
+            throw new RuntimeException("Kafka is down.");
         }
     }
 }
