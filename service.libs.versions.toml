@@ -3,6 +3,8 @@ spring-kafka                                = "3.0.4"
 spring-boot                                 = "3.1.1"
 spring-dependency-management                = "1.1.0"
 reactor                                     = "3.5.7"
+hibernate-validator                         = "8.0.1.Final"
+commons-lang3                               = "3.12.0"
 
 [libraries]
 spring-boot-starter                         = { module = "org.springframework.boot:spring-boot-starter" }
@@ -10,6 +12,8 @@ spring-boot-starter-web                     = { module = "org.springframework.bo
 spring-boot-starter-actuator                = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-kafka                                = { module = "org.springframework.kafka:spring-kafka", version.ref = "spring-kafka"}
 reactor                                     = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+hibernate-validator                         = { module = "org.hibernate.validator:hibernate-validator", version.ref = "hibernate-validator" }
+commons-lang3                               = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 
 [plugins]
 spring-boot                                 = { id = "org.springframework.boot", version.ref = "spring-boot"}

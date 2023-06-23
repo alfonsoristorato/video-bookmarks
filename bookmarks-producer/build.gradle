@@ -11,7 +11,9 @@ dependencies {
     implementation serviceLibs.spring.boot.starter.web
     implementation serviceLibs.spring.kafka
     implementation serviceLibs.reactor
+    implementation serviceLibs.commons.lang3
 
+    testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test
 
 }
