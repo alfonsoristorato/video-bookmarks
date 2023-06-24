@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
 
@@ -23,8 +25,13 @@ public class SaveBookmarkControllerTest {
 
     @Test
     void saveBookmark_callsRequiredDependenciesInOrder() {
-        ResponseEntity<Void> response = saveBookmarkController.saveBookmark("1", new BookmarkBody(1));
+        String accountId = UUID.randomUUID().toString();
+        String userId = UUID.randomUUID().toString();
+
+        ResponseEntity<Void> response = saveBookmarkController.saveBookmark("1", new BookmarkBody(1), accountId, userId);
+
         InOrder inOrder = inOrder(saveBookmarkValidation);
+        inOrder.verify(saveBookmarkValidation).validateHeaders(accountId, userId);
         inOrder.verify(saveBookmarkValidation).validateRequest("1", new BookmarkBody(1));
         assertThat(response).isEqualTo(ResponseEntity.accepted().build());
 

@@ -25,7 +25,13 @@ public class SaveBookmarkController {
     //timeStamp
 
     @PutMapping(path = "/{videoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveBookmark(@PathVariable String videoId, @RequestBody BookmarkBody bookmarkBody){
+    public ResponseEntity<Void> saveBookmark(
+            @PathVariable String videoId,
+            @RequestBody BookmarkBody bookmarkBody,
+            @RequestHeader String accountId,
+            @RequestHeader String userId
+    ){
+        saveBookmarkValidation.validateHeaders(accountId, userId);
         saveBookmarkValidation.validateRequest(videoId,bookmarkBody);
         return ResponseEntity.accepted().build();
     }

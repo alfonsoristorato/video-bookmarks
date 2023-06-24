@@ -4,6 +4,12 @@ spring:
     producer:
       properties:
         "[max.block.ms]": "10000"
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
 management:
   endpoint:
     health:
@@ -13,3 +19,4 @@ management:
       enabled: false
     ping:
       enabled: false
+
