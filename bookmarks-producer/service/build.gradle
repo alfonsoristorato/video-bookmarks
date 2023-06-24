@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation project(":common:kafka")
+    implementation project(":common:utils")
 
     implementation serviceLibs.spring.boot.starter
     implementation serviceLibs.spring.boot.starter.actuator

@@ -1,8 +1,8 @@
 package com.alfonsoristorato.bookmarksproducer.service.validation;
 
-import com.alfonsoristorato.bookmarksproducer.service.exceptions.BadRequestError;
-import com.alfonsoristorato.bookmarksproducer.service.exceptions.BadRequestException;
 import com.alfonsoristorato.bookmarksproducer.service.models.BookmarkBody;
+import com.alfonsoristorato.common.utils.exceptions.BadRequestError;
+import com.alfonsoristorato.common.utils.exceptions.BadRequestException;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 

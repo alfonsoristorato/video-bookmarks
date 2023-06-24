@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.service.exceptions;
+package com.alfonsoristorato.common.utils.exceptions;
 
 public class BadRequestException extends RuntimeException{
     private final BadRequestError error;

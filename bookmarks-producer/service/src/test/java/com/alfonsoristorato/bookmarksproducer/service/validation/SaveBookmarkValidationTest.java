@@ -1,7 +1,7 @@
 package com.alfonsoristorato.bookmarksproducer.service.validation;
 
-import com.alfonsoristorato.bookmarksproducer.service.exceptions.BadRequestException;
 import com.alfonsoristorato.bookmarksproducer.service.models.BookmarkBody;
+import com.alfonsoristorato.common.utils.exceptions.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
