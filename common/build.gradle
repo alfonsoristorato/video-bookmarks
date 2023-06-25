@@ -1,0 +1,4 @@
+tasks.register('test-all')  {
+    dependsOn ':common:kafka:test',
+            ':common:utils:test'
+}
