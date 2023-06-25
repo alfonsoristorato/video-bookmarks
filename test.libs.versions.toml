@@ -6,4 +6,5 @@ junit                  = "5.10.0"
 assertj-core                        = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 spring-boot-starter-test            = { module = "org.springframework.boot:spring-boot-starter-test" }
 junit-jupiter-api                   = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+reactor-test                        = { module= "io.projectreactor:reactor-test" }
 

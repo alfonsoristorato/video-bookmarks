@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-
-@Import(KafkaHealthIndicator.class)
 @Component
+@Import(KafkaHealthIndicator.class)
 public class DependenciesStartup {
     private final KafkaHealthIndicator kafkaHealthIndicator;
 

@@ -4,7 +4,6 @@ spring:
     producer:
       properties:
         "[max.block.ms]": "10000"
-
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -19,4 +18,9 @@ management:
       enabled: false
     ping:
       enabled: false
+downstreams:
+  kafka:
+    topics:
+      bookmark: "bookmarks-producer"
+      health: "health-indicator"
 

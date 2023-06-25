@@ -23,13 +23,13 @@ public class DependenciesStartupTest {
 
 
     @Test
-    void shouldNotThrowExceptionIfAllStatusesAreUp() {
+    void shouldNotThrowException_ifAllStatusesAreUp() {
         when(kafkaHealthIndicator.health()).thenReturn(Mono.just(Health.up().build()));
 
         assertThatNoException().isThrownBy(() -> dependenciesStartup.onStartup());
     }
     @Test
-    void shouldThrowExceptionIfAStatusIsDown() {
+    void shouldThrowException_ifAStatusIsDown() {
         when(kafkaHealthIndicator.health()).thenReturn(Mono.just(Health.down().build()));
 
         RuntimeException runtimeException = catchThrowableOfType(() -> dependenciesStartup.onStartup(), RuntimeException.class);

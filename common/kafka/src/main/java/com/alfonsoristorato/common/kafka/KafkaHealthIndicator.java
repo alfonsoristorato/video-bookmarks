@@ -1,5 +1,7 @@
 package com.alfonsoristorato.common.kafka;
 
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.ReactiveHealthIndicator;
 import org.springframework.kafka.KafkaException;
@@ -13,6 +15,9 @@ import java.util.concurrent.ExecutionException;
 public class KafkaHealthIndicator implements ReactiveHealthIndicator {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
+    @Value("${downstreams.kafka.topics.health}")
+    @NotBlank private String healthTopic;
+
     public KafkaHealthIndicator(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -20,7 +25,7 @@ public class KafkaHealthIndicator implements ReactiveHealthIndicator {
     @Override
     public Mono<Health> health() {
         try {
-            kafkaTemplate.send("kafka-health-indicator", "health").get();
+            kafkaTemplate.send(healthTopic, "healthy?").get();
         } catch (ExecutionException | InterruptedException | KafkaException e) {
             return Mono.just(Health.down(e).build());
         }

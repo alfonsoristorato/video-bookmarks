@@ -1,7 +1,9 @@
 package com.alfonsoristorato.bookmarksproducer.service.controllers;
 
 import com.alfonsoristorato.bookmarksproducer.service.models.BookmarkBody;
+import com.alfonsoristorato.bookmarksproducer.service.services.SaveBookmarkService;
 import com.alfonsoristorato.bookmarksproducer.service.validation.SaveBookmarkValidation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -25,18 +27,22 @@ public class SaveBookmarkControllerTest {
     private SaveBookmarkValidation saveBookmarkValidation;
 
     @Mock
+    private SaveBookmarkService saveBookmarkService;
+
+    @Mock
     private HeaderValidation headerValidation;
 
     @Test
-    void saveBookmark_callsRequiredDependenciesInOrder() {
+    void saveBookmark_callsRequiredDependenciesInOrder() throws JsonProcessingException {
         String accountId = UUID.randomUUID().toString();
         String userId = UUID.randomUUID().toString();
 
-        ResponseEntity<Void> response = saveBookmarkController.saveBookmark("1", new BookmarkBody(1), accountId, userId);
+        ResponseEntity<Void> response = saveBookmarkController.saveBookmark("1", new BookmarkBody(100), accountId, userId);
 
-        InOrder inOrder = inOrder(saveBookmarkValidation, headerValidation);
+        InOrder inOrder = inOrder(saveBookmarkValidation, headerValidation, saveBookmarkService);
         inOrder.verify(headerValidation).validateHeaders(accountId, userId);
-        inOrder.verify(saveBookmarkValidation).validateRequest("1", new BookmarkBody(1));
+        inOrder.verify(saveBookmarkValidation).validateRequest("1", new BookmarkBody(100));
+        inOrder.verify(saveBookmarkService).sendKafkaMessage(accountId, userId, 1, 100);
         assertThat(response).isEqualTo(ResponseEntity.accepted().build());
 
     }

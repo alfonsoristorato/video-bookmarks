@@ -1,7 +1,9 @@
 package com.alfonsoristorato.bookmarksproducer.service.controllers;
 
 import com.alfonsoristorato.bookmarksproducer.service.models.BookmarkBody;
+import com.alfonsoristorato.bookmarksproducer.service.services.SaveBookmarkService;
 import com.alfonsoristorato.bookmarksproducer.service.validation.SaveBookmarkValidation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,12 @@ public class SaveBookmarkController {
 
     private final HeaderValidation headerValidation;
 
-    public SaveBookmarkController(SaveBookmarkValidation saveBookmarkValidation, HeaderValidation headerValidation) {
+    private final SaveBookmarkService saveBookmarkService;
+
+    public SaveBookmarkController(SaveBookmarkValidation saveBookmarkValidation, HeaderValidation headerValidation, SaveBookmarkService saveBookmarkService) {
         this.saveBookmarkValidation = saveBookmarkValidation;
         this.headerValidation = headerValidation;
+        this.saveBookmarkService = saveBookmarkService;
     }
 
     //accountId
@@ -36,9 +41,10 @@ public class SaveBookmarkController {
             @RequestBody BookmarkBody bookmarkBody,
             @RequestHeader String accountId,
             @RequestHeader String userId
-    ){
+    ) throws JsonProcessingException {
         headerValidation.validateHeaders(accountId, userId);
-        saveBookmarkValidation.validateRequest(videoId,bookmarkBody);
+        saveBookmarkValidation.validateRequest(videoId, bookmarkBody);
+        saveBookmarkService.sendKafkaMessage(accountId, userId, Integer.parseInt(videoId), bookmarkBody.bookmarkPosition());
         return ResponseEntity.accepted().build();
     }
 

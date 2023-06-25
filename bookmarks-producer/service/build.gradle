@@ -13,6 +13,7 @@ dependencies {
     implementation serviceLibs.spring.kafka
     implementation serviceLibs.reactor
     implementation serviceLibs.commons.lang3
+    implementation serviceLibs.hibernate.validator
 
     testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test
