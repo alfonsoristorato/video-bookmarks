@@ -18,6 +18,8 @@ public class DependenciesStartup {
         this.kafkaHealthIndicator = kafkaHealthIndicator;
     }
 
+
+    //TODO: this results in 2 messages being created (at bean creation and at method call) - find a better way
     @PostConstruct
     public void onStartup() {
         Health kafkaHealth = kafkaHealthIndicator.health().block();

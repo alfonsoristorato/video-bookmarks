@@ -17,6 +17,8 @@ dependencies {
 
     testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test
+    testImplementation testLibs.spring.kafka.test
+    testImplementation testLibs.rest.assured
 
 }
 

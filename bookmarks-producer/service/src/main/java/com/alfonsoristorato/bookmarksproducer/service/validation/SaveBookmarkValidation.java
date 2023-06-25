@@ -13,9 +13,6 @@ public class SaveBookmarkValidation {
         if (!NumberUtils.isCreatable(videoId)) {
             throw new BadRequestException(BadRequestError.BAD_REQUEST_ERROR("videoId needs to be a valid number."));
         }
-        if (bookmarkBody == null) {
-            throw new BadRequestException(BadRequestError.BAD_REQUEST_ERROR("request body cannot be null."));
-        }
         if (bookmarkBody.bookmarkPosition() == null) {
             throw new BadRequestException(BadRequestError.BAD_REQUEST_ERROR("bookmarkPosition cannot be null."));
         }

@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @ExtendWith(MockitoExtension.class)
 public class SaveBookmarkValidationTest {
     @InjectMocks
@@ -29,14 +30,6 @@ public class SaveBookmarkValidationTest {
         assertThatThrownBy(() -> saveBookmarkValidation.validateRequest(videoId, new BookmarkBody(10)))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("videoId needs to be a valid number.");
-
-    }
-
-    @Test
-    void validateRequest_shouldThrowBadRequestExceptionIfBookmarkBodyIsNull() {
-        assertThatThrownBy(() -> saveBookmarkValidation.validateRequest("1", null))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage("request body cannot be null.");
 
     }
 
