@@ -1,0 +1,13 @@
+{
+  "name": "signatureVerifierHealth",
+  "request": {
+    "method": "GET",
+    "url": "/signatureVerifier/health"
+  },
+  "response": {
+    "status": 204,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

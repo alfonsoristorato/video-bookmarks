@@ -1,8 +1,8 @@
 {
-  "name": "signatureVerifier202",
+  "name": "signatureVerifierVerify204",
   "request": {
     "method": "POST",
-    "url": "/signature/verify",
+    "url": "/signatureVerifier/verify",
     "headers": {
       "signature": {
         "and": [
@@ -14,7 +14,7 @@
     }
   },
   "response": {
-    "status": 202,
+    "status": 204,
     "headers": {
       "Content-Type": "application/json"
     }

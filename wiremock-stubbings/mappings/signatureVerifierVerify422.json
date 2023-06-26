@@ -1,8 +1,8 @@
 {
-  "name": "signatureVerifier422",
+  "name": "signatureVerifierVerify422",
   "request": {
     "method": "POST",
-    "url": "/signature/verify",
+    "url": "/signatureVerifier/verify",
     "headers": {
       "signature": {
         "or": [
