@@ -60,3 +60,11 @@ services:
       SERVER_PORT: 9999
       KAFKA_CLUSTERS_0_NAME: local-cluster
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:9092, kafka-2:9092
+
+  wiremock:
+    container_name: wiremock
+    image: wiremock/wiremock
+    ports:
+      - 9000:8080
+    volumes:
+      - ./wiremock-stubbings:/home/wiremock

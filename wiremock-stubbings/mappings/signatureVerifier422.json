@@ -1,0 +1,25 @@
+{
+  "name": "signatureVerifier422",
+  "request": {
+    "method": "POST",
+    "url": "/signature/verify",
+    "headers": {
+      "signature": {
+        "or": [
+          {
+            "matches": "^(?!validSignature$).*$"
+          },
+          {
+            "absent": true
+          }
+        ]
+      }
+    }
+  },
+  "response": {
+    "status": 422,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
