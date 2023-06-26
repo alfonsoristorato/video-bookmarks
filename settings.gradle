@@ -1,9 +1,10 @@
 rootProject.name = 'video-bookmarks'
 include 'bookmarks-producer'
-include 'bookmarks-producer:service'
+include 'bookmarks-producer:app'
 include 'common'
 include 'common:kafka'
 include 'common:utils'
+include 'common:signature-verifier'
 
 dependencyResolutionManagement {
     versionCatalogs {

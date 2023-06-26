@@ -1,0 +1,21 @@
+plugins {
+    alias serviceLibs.plugins.spring.boot
+    alias serviceLibs.plugins.spring.dependency.management
+}
+
+dependencies {
+    implementation serviceLibs.spring.boot.starter
+//    implementation serviceLibs.spring.boot.starter.actuator
+//    implementation serviceLibs.spring.boot.starter.web
+//    implementation serviceLibs.spring.kafka
+//    implementation serviceLibs.reactor
+    implementation serviceLibs.hibernate.validator
+
+    testImplementation testLibs.assertj.core
+    testImplementation testLibs.spring.boot.starter.test
+//    testImplementation testLibs.reactor.test
+}
+
+test {
+    useJUnitPlatform()
+}
