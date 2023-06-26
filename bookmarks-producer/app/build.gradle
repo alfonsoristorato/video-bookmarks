@@ -1,0 +1,28 @@
+plugins {
+    alias serviceLibs.plugins.spring.boot
+    alias serviceLibs.plugins.spring.dependency.management
+}
+
+dependencies {
+    implementation project(":common:kafka")
+    implementation project(":common:utils")
+    implementation project(":common:signature-verifier")
+
+    implementation serviceLibs.spring.boot.starter
+    implementation serviceLibs.spring.boot.starter.actuator
+    implementation serviceLibs.spring.boot.starter.web
+    implementation serviceLibs.spring.kafka
+    implementation serviceLibs.reactor
+    implementation serviceLibs.commons.lang3
+    implementation serviceLibs.hibernate.validator
+
+    testImplementation testLibs.assertj.core
+    testImplementation testLibs.spring.boot.starter.test
+    testImplementation testLibs.spring.kafka.test
+    testImplementation testLibs.rest.assured
+
+}
+
+test {
+    useJUnitPlatform()
+}
