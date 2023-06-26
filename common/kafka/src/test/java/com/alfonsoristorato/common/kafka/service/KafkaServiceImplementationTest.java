@@ -35,9 +35,10 @@ public class KafkaServiceImplementationTest {
 
     @Test
     void getHealth_shouldReturnUpWhenTheServiceIsUp() {
+        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>("health-indicator", "health", "healthy?");
         CompletableFuture<SendResult<String, String>> future =
-                CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("kafka-health-indicator", "", ""), null));
-        when(kafkaTemplate.send("health-indicator", "healthy?")).thenReturn(future);
+                CompletableFuture.completedFuture(new SendResult<>(kafkaMessage, null));
+        when(kafkaTemplate.send(kafkaMessage)).thenReturn(future);
 
         StepVerifier.create(kafkaServiceImplementation.getHealth())
                 .expectNextMatches(health -> health.getStatus().equals(Health.up().build().getStatus()))
@@ -46,11 +47,13 @@ public class KafkaServiceImplementationTest {
 
     @Test
     void getHealth_shouldReturnDownWhenTheServiceThrowsException() {
+        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>("health-indicator", "health", "healthy?");
+
         CompletableFuture<SendResult<String, String>> future =
                 CompletableFuture.supplyAsync(() -> {
                     throw new RuntimeException("exception");
                 });
-        when(kafkaTemplate.send("health-indicator", "healthy?")).thenReturn(future);
+        when(kafkaTemplate.send(kafkaMessage)).thenReturn(future);
 
         StepVerifier.create(kafkaServiceImplementation.getHealth())
                 .expectNextMatches(health -> health.getStatus().equals(Health.down().build().getStatus()))

@@ -18,3 +18,8 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
+
+tasks.register('test-all')  {
+    dependsOn ':bookmarks-producer:test-all',
+            ':common:test-all'
+}

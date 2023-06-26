@@ -26,7 +26,7 @@ class KafkaServiceImplementation implements KafkaService {
 
     @Override
     public Mono<Health> getHealth() {
-        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>(kafkaTopicConfigProperties.healthTopic(), null,"healthy?");
+        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>(kafkaTopicConfigProperties.healthTopic(), "health","healthy?");
         try {
             this.sendMessage(kafkaMessage).get();
         } catch (ExecutionException | InterruptedException | KafkaException e) {
