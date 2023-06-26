@@ -1,4 +1,4 @@
-package validation;
+package com.alfonsoristorato.common.utils.validation;
 
 import com.alfonsoristorato.common.utils.exceptions.BadRequestError;
 import com.alfonsoristorato.common.utils.exceptions.BadRequestException;
