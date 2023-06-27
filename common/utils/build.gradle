@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation serviceLibs.spring.boot.starter
     implementation serviceLibs.spring.boot.starter.web
+    implementation serviceLibs.commons.lang3
 
     testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test

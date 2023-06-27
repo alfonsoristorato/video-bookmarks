@@ -18,9 +18,9 @@ import java.util.concurrent.CompletableFuture;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KafkaServiceImplementationTest {
+public class KafkaServiceImplTest {
     @InjectMocks
-    private KafkaServiceImplementation kafkaServiceImplementation;
+    private KafkaServiceImpl kafkaServiceImpl;
 
     @Mock
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -40,7 +40,7 @@ public class KafkaServiceImplementationTest {
                 CompletableFuture.completedFuture(new SendResult<>(kafkaMessage, null));
         when(kafkaTemplate.send(kafkaMessage)).thenReturn(future);
 
-        StepVerifier.create(kafkaServiceImplementation.getHealth())
+        StepVerifier.create(kafkaServiceImpl.getHealth())
                 .expectNextMatches(health -> health.getStatus().equals(Health.up().build().getStatus()))
                 .verifyComplete();
     }
@@ -55,7 +55,7 @@ public class KafkaServiceImplementationTest {
                 });
         when(kafkaTemplate.send(kafkaMessage)).thenReturn(future);
 
-        StepVerifier.create(kafkaServiceImplementation.getHealth())
+        StepVerifier.create(kafkaServiceImpl.getHealth())
                 .expectNextMatches(health -> health.getStatus().equals(Health.down().build().getStatus()))
                 .verifyComplete();
     }

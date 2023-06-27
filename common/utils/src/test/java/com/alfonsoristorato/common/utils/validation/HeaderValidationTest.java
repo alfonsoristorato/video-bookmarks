@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @ExtendWith(MockitoExtension.class)
 public class HeaderValidationTest {
     @InjectMocks
@@ -21,17 +22,19 @@ public class HeaderValidationTest {
     void validateHeaders_shouldNotThrowBadRequestExceptionIfValidAccountIdAndUserIdProvided() {
         String accountId = UUID.randomUUID().toString();
         String userId = UUID.randomUUID().toString();
-        assertThatNoException().isThrownBy(() -> headerValidation.validateHeaders(accountId, userId));
+        String signature = "signature";
+        assertThatNoException().isThrownBy(() -> headerValidation.validateHeaders(accountId, userId, signature));
     }
 
     @ParameterizedTest
     @CsvSource({
-            "accountId, 200dd54b-e006-4841-9b54-c30157c38efd, Invalid 'accountId' format provided.",
-            "acc-ou-nt-Id, us-e-r-Id, Invalid 'accountId' format provided.",
-            "200dd54b-e006-4841-9b54-c30157c38efd, userId, Invalid 'userId' format provided."
+            "accountId, 200dd54b-e006-4841-9b54-c30157c38efd, signature, Invalid 'accountId' format provided.",
+            "acc-ou-nt-Id, us-e-r-Id, signature, Invalid 'accountId' format provided.",
+            "200dd54b-e006-4841-9b54-c30157c38efd, userId, signature, Invalid 'userId' format provided.",
+            "200dd54b-e006-4841-9b54-c30157c38efd, 200dd54b-e006-4841-9b54-c30157c38efd, , Invalid 'signature' format provided."
     })
-    void validateHeaders_shouldThrowBadRequestExceptionIfAccountIdOrUserIdAreInvalid(String accountId, String userId, String exceptionMessage) {
-        assertThatThrownBy(() -> headerValidation.validateHeaders(accountId, userId))
+    void validateHeaders_shouldThrowBadRequestExceptionIfParametersPassedAreInvalid(String accountId, String userId, String signature, String exceptionMessage) {
+        assertThatThrownBy(() -> headerValidation.validateHeaders(accountId, userId, signature))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(exceptionMessage);
     }

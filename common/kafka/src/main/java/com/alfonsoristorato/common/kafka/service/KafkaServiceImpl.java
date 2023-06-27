@@ -14,12 +14,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
-class KafkaServiceImplementation implements KafkaService {
+class KafkaServiceImpl implements KafkaService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final KafkaTopicConfigProperties kafkaTopicConfigProperties;
 
-    protected KafkaServiceImplementation(KafkaTemplate<String, String> kafkaTemplate, KafkaTopicConfigProperties kafkaTopicConfigProperties) {
+    protected KafkaServiceImpl(KafkaTemplate<String, String> kafkaTemplate, KafkaTopicConfigProperties kafkaTopicConfigProperties) {
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaTopicConfigProperties = kafkaTopicConfigProperties;
     }
