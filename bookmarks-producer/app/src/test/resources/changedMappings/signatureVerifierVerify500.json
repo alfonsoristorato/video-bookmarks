@@ -1,6 +1,5 @@
 {
-  "id": "5d38f7d3-c69b-40d5-a953-3e705199df3f",
-  "name": "signatureVerifierVerify204",
+  "name": "signatureVerifierVerify500",
   "request": {
     "method": "POST",
     "url": "/signatureVerifier/verify",
@@ -15,7 +14,7 @@
     }
   },
   "response": {
-    "status": 204,
+    "status": 500,
     "headers": {
       "Content-Type": "application/json"
     }

@@ -24,7 +24,9 @@ downstreams:
       bookmark: "bookmarks-producer"
       health: "health-indicator"
   signature-verifier:
-    urls:
-      verify: "http://localhost:9000/signatureVerifier/verify"
-      health: "http://localhost:9000/signatureVerifier/health"
+    base-url: "http://localhost:9000/signatureVerifier/"
+    paths:
+      verify: "verify"
+      health: "health"
+
 

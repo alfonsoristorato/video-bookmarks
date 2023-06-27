@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,48 +23,76 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
     @Autowired
     private HttpClient client;
 
-    private final BookmarkBody bookmarkBody = new BookmarkBody(100);
+    private static final BookmarkBody BOOKMARK_BODY = new BookmarkBody(100);
 
-    private static final String accountId = UUID.randomUUID().toString();
-    private static final String userId = UUID.randomUUID().toString();
+    private static final String ACCOUNT_ID = UUID.randomUUID().toString();
+    private static final String USER_ID = UUID.randomUUID().toString();
 
-    private static final Map<String, String> validHeaders = new HashMap<>() {
+    private static final String SIGNATURE = "validSignature";
+
+    private static final Map<String, String> VALID_HEADERS = new HashMap<>() {
         {
-            put("accountId", accountId);
-            put("userId", userId);
+            put("accountId", ACCOUNT_ID);
+            put("userId", USER_ID);
+            put("signature", SIGNATURE);
         }
     };
 
-    private static Stream<Map<String, String>> invalidAndMissingAccountIdHeaders() {
+    private static Stream<Map<String, String>> invalidFormatAndMissingAccountIdHeaders() {
         return Stream.of(
                 Map.of(
                         "accountId", "",
-                        "userId", ""
+                        "userId", "",
+                        "signature", ""
                 ),
                 Map.of("accountId", "",
-                        "userId", userId
+                        "userId", USER_ID,
+                        "signature", SIGNATURE
                 ),
                 Map.of(
                         "accountId", "not-a-uuid",
-                        "userId", userId
+                        "userId", USER_ID,
+                        "signature", SIGNATURE
                 ),
                 Map.of(
-                        "userId", userId
+                        "userId", USER_ID,
+                        "signature", SIGNATURE
                 )
         );
     }
 
-    private static Stream<Map<String, String>> invalidAndMissingUserIdHeaders() {
+    private static Stream<Map<String, String>> invalidFormatAndMissingUserIdHeaders() {
         return Stream.of(
                 Map.of(
-                        "accountId", accountId,
-                        "userId", ""
+                        "accountId", ACCOUNT_ID,
+                        "userId", "",
+                        "signature", ""
                 ),
-                Map.of("accountId", accountId,
-                        "userId", "not-a-uuid"
+                Map.of("accountId", ACCOUNT_ID,
+                        "userId", "not-a-uuid",
+                        "signature", SIGNATURE
                 ),
                 Map.of(
-                        "accountId", accountId
+                        "accountId", ACCOUNT_ID,
+                        "signature", SIGNATURE
+                )
+        );
+    }
+
+    private static Stream<Map<String, String>> invalidFormatAndMissingSignatureHeaders() {
+        return Stream.of(
+                Map.of(
+                        "accountId", ACCOUNT_ID,
+                        "userId", USER_ID,
+                        "signature", ""
+                ),
+                Map.of("accountId", ACCOUNT_ID,
+                        "userId", USER_ID,
+                        "signature", " "
+                ),
+                Map.of(
+                        "accountId", ACCOUNT_ID,
+                        "userId", USER_ID
                 )
         );
     }
@@ -76,15 +105,15 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
     }
 
     @Nested
-    @DisplayName("POST /bookmark/{videoId}:: happy path")
+    @DisplayName("PUT /bookmark/{videoId}:: happy path")
     class saveBookmarkHappyPathTests {
 
         @Test
         @DisplayName("correct params")
         void saveBookmark_withCorrectParams() {
             client.given()
-                    .headers(validHeaders)
-                    .body(bookmarkBody)
+                    .headers(VALID_HEADERS)
+                    .body(BOOKMARK_BODY)
                     .when()
                     .put("/bookmark/{videoId}", 1)
                     .then()
@@ -94,18 +123,18 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
     }
 
     @Nested
-    @DisplayName("POST /bookmark/{videoId}:: unhappy path:: headers validation")
-    class saveBookmarkUnhappyPathHeaderValidationTests {
+    @DisplayName("PUT /bookmark/{videoId}:: unhappy path:: headers validation")
+    class saveBookmarkUnhappyPathHeaderFormatValidationTests {
         @ParameterizedTest
-        @DisplayName("invalid or missing accountId takes precedence over invalid userId")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.SaveBookmarkApiTest#invalidAndMissingAccountIdHeaders")
-        void saveBookmark_withInvalidAccountIdRegardlessOfUserId(Map<String, String> headers) {
+        @DisplayName("invalid format or missing accountId takes precedence over following invalid headers")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.SaveBookmarkApiTest#invalidFormatAndMissingAccountIdHeaders")
+        void saveBookmark_withInvalidFormatOrMissingAccountIdRegardlessOfFollowingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("accountId") != null
                     ? "Invalid 'accountId' format provided."
                     : "Required request header 'accountId' missing.";
             client.given()
                     .headers(headers)
-                    .body(bookmarkBody)
+                    .body(BOOKMARK_BODY)
                     .when()
                     .put("/bookmark/{videoId}", 1)
                     .then()
@@ -118,15 +147,36 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
         }
 
         @ParameterizedTest
-        @DisplayName("invalid or missing userId")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.SaveBookmarkApiTest#invalidAndMissingUserIdHeaders")
-        void saveBookmark_withInvalidUserIdAndValidAccountId(Map<String, String> headers) {
+        @DisplayName("invalid format or missing userId takes precedence over following invalid headers")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.SaveBookmarkApiTest#invalidFormatAndMissingUserIdHeaders")
+        void saveBookmark_withInvalidFormatOrMissingUserIdOfFollowingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("userId") != null
                     ? "Invalid 'userId' format provided."
                     : "Required request header 'userId' missing.";
             client.given()
                     .headers(headers)
-                    .body(bookmarkBody)
+                    .body(BOOKMARK_BODY)
+                    .when()
+                    .put("/bookmark/{videoId}", 1)
+                    .then()
+                    .statusCode(400)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Bad Request Error"),
+                            "details", equalTo(responseDetails)
+                    );
+        }
+
+        @ParameterizedTest
+        @DisplayName("invalid format or missing signature")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.SaveBookmarkApiTest#invalidFormatAndMissingSignatureHeaders")
+        void saveBookmark_withInvalidFormatOrMissingSignatureAndValidRemainingHeaders(Map<String, String> headers) {
+            String responseDetails = headers.get("signature") != null
+                    ? "Invalid 'signature' format provided."
+                    : "Required request header 'signature' missing.";
+            client.given()
+                    .headers(headers)
+                    .body(BOOKMARK_BODY)
                     .when()
                     .put("/bookmark/{videoId}", 1)
                     .then()
@@ -148,7 +198,7 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
         @ValueSource(strings = {" ", " 1", "1 ", "aNumber", "two"})
         void saveBookmark_withInvalidPathVariableRegardlessOfBookmarkBody(String pathVariable) {
             client.given()
-                    .headers(validHeaders)
+                    .headers(VALID_HEADERS)
                     .body(new BookmarkBody(null))
                     .when()
                     .put("/bookmark/{videoId}", pathVariable)
@@ -169,7 +219,7 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
                     ? "bookmarkPosition needs to be a number."
                     : "bookmarkPosition cannot be null.";
             client.given()
-                    .headers(validHeaders)
+                    .headers(VALID_HEADERS)
                     .body(bookmarkBody)
                     .when()
                     .put("/bookmark/{videoId}", 1)
@@ -186,7 +236,7 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
         @DisplayName("missing bookmarkBody")
         void saveBookmark_withMissingBookmarkBody() {
             client.given()
-                    .headers(validHeaders)
+                    .headers(VALID_HEADERS)
                     .when()
                     .put("/bookmark/{videoId}", 1)
                     .then()
@@ -200,6 +250,58 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
     }
 
     @Nested
+    @DisplayName("PUT /bookmark/{videoId}:: unhappy path:: invalid signature")
+    class saveBookmarkUnhappyPathSignatureValidationTests {
+
+        @Test
+        @DisplayName("invalid signature")
+        void saveBookmark_withInvalidSignature() {
+            Map<String, String> invalidSignatureHeaders = Map.of(
+                    "accountId", ACCOUNT_ID,
+                    "userId", USER_ID,
+                    "signature", "invalidSignature"
+            );
+            client.given()
+                    .headers(invalidSignatureHeaders)
+                    .body(new BookmarkBody(100))
+                    .when()
+                    .put("/bookmark/{videoId}", 1)
+                    .then()
+                    .statusCode(400)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Bad Request Error"),
+                            "details", equalTo("signature is invalid.")
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /bookmark/{videoId}:: unhappy path:: signatureVerifier downstream down")
+    class saveBookmarkUnhappyPathSignatureVerifierDownstreamDownTests {
+
+        @Test
+        @DisplayName("signatureVerifier downstream down")
+        void saveBookmark_signatureVerifierDownstreamDown() throws IOException {
+            client.changeWiremockMapping("1");
+
+            client.given()
+                    .headers(VALID_HEADERS)
+                    .body(new BookmarkBody(100))
+                    .when()
+                    .put("/bookmark/{videoId}", 1)
+                    .then()
+                    .statusCode(500)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Downstream Error"),
+                            "details", equalTo("SignatureVerifier is down.")
+                    );
+        }
+    }
+
+
+    @Nested
     @DisplayName("{METHOD} /bookmark/{videoId}:: unhappy path:: invalid methods")
     class saveBookmarkUnhappyPathMethodNotSupportedTests {
 
@@ -208,7 +310,7 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
         @ValueSource(strings = {"GET", "PATCH", "DELETE", "POST"})
         void saveBookmark_withInvalidPathVariableRegardlessOfBookmarkBody(String method) {
             client.given()
-                    .headers(validHeaders)
+                    .headers(VALID_HEADERS)
                     .body(new BookmarkBody(null))
                     .when()
                     .request(method, "/bookmark/{videoId}", 1)

@@ -3,11 +3,16 @@ assertj                = "3.24.2"
 junit                  = "5.10.0"
 rest-assured           = "5.3.0"
 spring-kafka-test      = "3.0.8"
+spring-cloud-stub      = "4.0.3"
+wiremock-jre8          = "2.35.0"
 
 [libraries]
 assertj-core                        = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 spring-boot-starter-test            = { module = "org.springframework.boot:spring-boot-starter-test" }
 junit-jupiter-api                   = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 reactor-test                        = { module= "io.projectreactor:reactor-test" }
-rest-assured                        = { module = "io.rest-assured:rest-assured", version.ref ="rest-assured" }
-spring-kafka-test                   = { module = "org.springframework.kafka:spring-kafka-test", version.ref ="spring-kafka-test" }
+rest-assured                        = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
+spring-kafka-test                   = { module = "org.springframework.kafka:spring-kafka-test", version.ref = "spring-kafka-test" }
+spring-cloud-stub                   = { module = "org.springframework.cloud:spring-cloud-starter-contract-stub-runner", version.ref = "spring-cloud-stub" }
+wiremock-jre8                       = { module = "com.github.tomakehurst:wiremock-jre8-standalone", version.ref = "wiremock-jre8" }
+

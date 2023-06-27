@@ -11,6 +11,7 @@ dependencies {
     implementation serviceLibs.spring.boot.starter
     implementation serviceLibs.spring.boot.starter.actuator
     implementation serviceLibs.spring.boot.starter.web
+    implementation serviceLibs.spring.boot.starter.webflux
     implementation serviceLibs.spring.kafka
     implementation serviceLibs.reactor
     implementation serviceLibs.commons.lang3
@@ -20,7 +21,9 @@ dependencies {
     testImplementation testLibs.spring.boot.starter.test
     testImplementation testLibs.spring.kafka.test
     testImplementation testLibs.rest.assured
-
+    testImplementation testLibs.reactor.test
+    testImplementation testLibs.spring.cloud.stub
+    testImplementation testLibs.wiremock.jre8
 }
 
 test {

@@ -17,7 +17,7 @@ public class HealthApiTest extends ApiTestConfig {
     class healthApiTests {
 
         @Test
-        @DisplayName("returns UP with Kafka component")
+        @DisplayName("returns UP with expected components")
         void healthApi() {
             client.given()
                     .when()
@@ -27,10 +27,14 @@ public class HealthApiTest extends ApiTestConfig {
                     .body(
                             "size()", equalTo(2),
                             "status", equalTo("UP"),
-                            "components.size()", equalTo(1),
+                            "components.size()", equalTo(2),
                             "components.Kafka.size()", equalTo(1),
-                            "components.Kafka.status", equalTo("UP"));
+                            "components.Kafka.status", equalTo("UP"),
+                            "components.SignatureVerifier.size()", equalTo(1),
+                            "components.SignatureVerifier.status", equalTo("UP"));
         }
     }
+
+    //TODO: unhappy path
 
 }

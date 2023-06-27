@@ -26,11 +26,21 @@ public class SaveBookmarkService {
         return new SaveBookmarkMessage(accountId, userId, videoId, bookmarkPosition, timestamp);
     }
 
-    public void sendKafkaMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition) throws JsonProcessingException {
+    private String createJsonMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition, Instant now){
+        try {
+            return mapper.writeValueAsString(createMessage(accountId, userId, videoId, bookmarkPosition, now));
+        }
+        // should not happen
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendKafkaMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition) {
         String topic = kafkaTopicConfigProperties.bookmarkTopic();
         Instant now = Instant.now();
-        SaveBookmarkMessage message = createMessage(accountId, userId, videoId, bookmarkPosition, now);
-        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>(topic, accountId, mapper.writeValueAsString(message));
+        String message = createJsonMessage(accountId, userId, videoId, bookmarkPosition, now);
+        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>(topic, accountId, message);
         kafkaService.sendMessage(kafkaMessage);
     }
 }

@@ -1,41 +1,48 @@
 package com.alfonsoristorato.bookmarksproducer.app.dependencies;
 
-import com.alfonsoristorato.common.kafka.health.KafkaHealthIndicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.actuate.health.Health;
-import reactor.core.publisher.Mono;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.health.Status;
+import org.springframework.context.ConfigurableApplicationContext;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DependenciesStartupTest {
-
     @InjectMocks
     private DependenciesStartup dependenciesStartup;
 
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private HealthEndpoint healthEndpoint;
+
     @Mock
-    private KafkaHealthIndicator kafkaHealthIndicator;
+    private static ConfigurableApplicationContext ctx;
 
+    @Mock
+    private ApplicationArguments applicationArguments;
 
     @Test
-    void shouldNotThrowException_ifAllStatusesAreUp() {
-        when(kafkaHealthIndicator.health()).thenReturn(Mono.just(Health.up().build()));
+    public void healthCheckRunner_shouldCloseContextIfHealthIsDown() throws Exception {
+        when(healthEndpoint.health().getStatus()).thenReturn(Status.DOWN);
 
-        assertThatNoException().isThrownBy(() -> dependenciesStartup.onStartup());
+        dependenciesStartup.healthCheckRunner(healthEndpoint, ctx).run(applicationArguments);
+
+        verify(ctx).close();
     }
+
     @Test
-    void shouldThrowException_ifAStatusIsDown() {
-        when(kafkaHealthIndicator.health()).thenReturn(Mono.just(Health.down().build()));
+    public void healthCheckRunner_shouldNotCloseContextIfHealthIsUp() throws Exception {
+        when(healthEndpoint.health().getStatus()).thenReturn(Status.UP);
 
-        RuntimeException runtimeException = catchThrowableOfType(() -> dependenciesStartup.onStartup(), RuntimeException.class);
+        dependenciesStartup.healthCheckRunner(healthEndpoint, ctx).run(applicationArguments);
 
-        assertThat(runtimeException).hasMessage("Kafka is down.");
+        verifyNoInteractions(ctx);
     }
-
 
 }
