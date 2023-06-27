@@ -33,6 +33,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getError());
     }
 
+    @ExceptionHandler(DownstreamException.class)
+    public ResponseEntity<DownstreamError> downstreamException(DownstreamException ex) {
+        log.error("Caught the following exception: {} with message: {}", ex.getClass(), ex.getMessage());
+        return ResponseEntity.internalServerError().body(ex.getError());
+    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<BadRequestError> methodNotSupportedException(HttpRequestMethodNotSupportedException ex){
         log.error("Caught the following exception: {} with message: {}", ex.getClass(), ex.getMessage());

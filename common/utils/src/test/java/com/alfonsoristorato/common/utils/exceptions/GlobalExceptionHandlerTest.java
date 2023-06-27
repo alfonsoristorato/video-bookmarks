@@ -48,6 +48,16 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void downstreamException_shouldReturnExpectedResponseEntityAnd400(){
+        DownstreamException ex = new DownstreamException(DownstreamError.DOWNSTREAM_ERROR("some error"));
+
+        ResponseEntity<DownstreamError> response = globalExceptionHandler.downstreamException(ex);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getBody()).isEqualTo(DownstreamError.DOWNSTREAM_ERROR("some error"));
+    }
+
+    @Test
     void methodNotSupportedException_shouldReturnExpectedResponseEntityAnd405(){
         HttpRequestMethodNotSupportedException ex = new HttpRequestMethodNotSupportedException(HttpMethod.GET.toString());
 
