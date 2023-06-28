@@ -17,7 +17,7 @@ public class HealthApiTest extends ApiTestConfig {
     class healthApiTests {
 
         @Test
-        @DisplayName("returns UP with expected components")
+        @DisplayName("returns UP and 200 with expected components")
         void healthApi() {
             client.given()
                     .when()
@@ -35,6 +35,33 @@ public class HealthApiTest extends ApiTestConfig {
         }
     }
 
-    //TODO: unhappy path
+    @Nested
+    @DisplayName("GET /actuator/health:: unhappy path:: components down")
+    class healthApiTestsUnhappyPathComponentsDown {
+
+        @Test
+        @DisplayName("returns DOWN and 503 when SignatureVerifier is DOWN")
+        void signatureVerifierDown() {
+            client.changeWiremockMapping(WIREMOCK_HEALTH,500);
+
+            client.given()
+                    .when()
+                    .get("/actuator/health")
+                    .then()
+                    .statusCode(503)
+                    .body(
+                            "size()", equalTo(2),
+                            "status", equalTo("DOWN"),
+                            "components.size()", equalTo(2),
+                            "components.Kafka.size()", equalTo(1),
+                            "components.Kafka.status", equalTo("UP"),
+                            "components.SignatureVerifier.size()", equalTo(1),
+                            "components.SignatureVerifier.status", equalTo("DOWN"));
+        }
+
+        //TODO: kafka down
+    }
+
+
 
 }

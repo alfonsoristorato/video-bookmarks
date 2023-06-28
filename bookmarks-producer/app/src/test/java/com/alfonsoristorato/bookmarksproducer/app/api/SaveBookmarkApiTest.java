@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +25,7 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
     private static final BookmarkBody BOOKMARK_BODY = new BookmarkBody(100);
 
     private static final String ACCOUNT_ID = UUID.randomUUID().toString();
+
     private static final String USER_ID = UUID.randomUUID().toString();
 
     private static final String SIGNATURE = "validSignature";
@@ -282,8 +282,8 @@ public class SaveBookmarkApiTest extends ApiTestConfig {
 
         @Test
         @DisplayName("signatureVerifier downstream down")
-        void saveBookmark_signatureVerifierDownstreamDown() throws IOException {
-            client.changeWiremockMapping("1");
+        void saveBookmark_signatureVerifierDownstreamDown() {
+            client.changeWiremockMapping(WIREMOCK_VERIFY,500);
 
             client.given()
                     .headers(VALID_HEADERS)

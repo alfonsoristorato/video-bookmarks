@@ -13,4 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 @EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:3333", "port=3333"})
 @AutoConfigureWireMock
 public abstract class ApiTestConfig {
+
+    static final String WIREMOCK_HEALTH = "health";
+
+    static final String WIREMOCK_VERIFY = "verify";
 }
