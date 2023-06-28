@@ -1,0 +1,3 @@
+tasks.register('test-all')  {
+    dependsOn ':bookmarks-persister:app:test'
+}

@@ -1,6 +1,8 @@
 rootProject.name = 'video-bookmarks'
 include 'bookmarks-producer'
 include 'bookmarks-producer:app'
+include 'bookmarks-persister'
+include 'bookmarks-persister:app'
 include 'common'
 include 'common:kafka'
 include 'common:utils'
@@ -16,5 +18,4 @@ dependencyResolutionManagement {
         }
     }
 }
-
 

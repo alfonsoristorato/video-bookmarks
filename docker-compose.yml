@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: '3.8'
 services:
   zookeeper-1:
     image: confluentinc/cp-zookeeper:latest
@@ -87,3 +87,25 @@ services:
       - 9000:8080
     volumes:
       - ./wiremock-stubbings:/home/wiremock
+
+  cassandra:
+    image: cassandra:latest
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=local-cluster
+    networks:
+      - cassandra-network
+
+  init-cassandra:
+    image: cassandra:latest
+    volumes:
+      - ./cassandra/scripts/bash:/docker-entrypoint.sh
+      - ./cassandra/scripts/cql:/tmp/cql
+    networks:
+      - cassandra-network
+    command: >
+      bash ./docker-entrypoint.sh/execute-cql.sh
+
+networks:
+  cassandra-network:
