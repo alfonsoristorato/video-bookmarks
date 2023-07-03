@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import reactor.kafka.sender.SenderResult;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -29,6 +31,9 @@ public class SaveBookmarkServiceTest {
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private SenderResult<Void> senderResult;
 
     @Mock
     private KafkaTopicConfigProperties kafkaTopicConfigProperties;
@@ -53,6 +58,7 @@ public class SaveBookmarkServiceTest {
 
             when(kafkaTopicConfigProperties.bookmarkTopic()).thenReturn("topic");
             when(objectMapper.writeValueAsString(any(SaveBookmarkMessage.class))).thenReturn(messageJson);
+            when(kafkaService.sendMessage(any())).thenReturn(Mono.just(senderResult));
 
             saveBookmarkService.sendKafkaMessage(accountId,userId,videoId,bookmarkPosition);
 

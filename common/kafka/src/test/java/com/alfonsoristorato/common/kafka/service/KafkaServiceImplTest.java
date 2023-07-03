@@ -2,19 +2,18 @@ package com.alfonsoristorato.common.kafka.service;
 
 import com.alfonsoristorato.common.kafka.config.KafkaTopicConfigProperties;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
+import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
+import reactor.core.publisher.Mono;
+import reactor.kafka.sender.SenderResult;
 import reactor.test.StepVerifier;
 
-import java.util.concurrent.CompletableFuture;
-
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,22 +22,20 @@ public class KafkaServiceImplTest {
     private KafkaServiceImpl kafkaServiceImpl;
 
     @Mock
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private ReactiveKafkaProducerTemplate<String, String> reactiveKafkaProducerTemplate;
 
     @Mock
     private KafkaTopicConfigProperties kafkaTopicConfigProperties;
 
-    @BeforeEach
-    void setUp() {
-        when(kafkaTopicConfigProperties.healthTopic()).thenReturn("health-indicator");
-    }
+    @Mock
+    private SenderResult<Void> senderResult;
 
     @Test
     void getHealth_shouldReturnUpWhenTheServiceIsUp() {
+        when(kafkaTopicConfigProperties.healthTopic()).thenReturn("health-indicator");
         ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>("health-indicator", "health", "healthy?");
-        CompletableFuture<SendResult<String, String>> future =
-                CompletableFuture.completedFuture(new SendResult<>(kafkaMessage, null));
-        when(kafkaTemplate.send(kafkaMessage)).thenReturn(future);
+
+        when(reactiveKafkaProducerTemplate.send(kafkaMessage)).thenReturn(Mono.just(senderResult));
 
         StepVerifier.create(kafkaServiceImpl.getHealth())
                 .expectNextMatches(health -> health.getStatus().equals(Health.up().build().getStatus()))
@@ -47,16 +44,23 @@ public class KafkaServiceImplTest {
 
     @Test
     void getHealth_shouldReturnDownWhenTheServiceThrowsException() {
+        when(kafkaTopicConfigProperties.healthTopic()).thenReturn("health-indicator");
         ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>("health-indicator", "health", "healthy?");
 
-        CompletableFuture<SendResult<String, String>> future =
-                CompletableFuture.supplyAsync(() -> {
-                    throw new RuntimeException("exception");
-                });
-        when(kafkaTemplate.send(kafkaMessage)).thenReturn(future);
+        when(reactiveKafkaProducerTemplate.send(kafkaMessage)).thenReturn(Mono.error(new RuntimeException()));
 
         StepVerifier.create(kafkaServiceImpl.getHealth())
                 .expectNextMatches(health -> health.getStatus().equals(Health.down().build().getStatus()))
                 .verifyComplete();
+    }
+
+    @Test
+    void sendMessage_callsReactiveKafkaProducerTemplate() {
+        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>("health-indicator", "health", "healthy?");
+
+        kafkaServiceImpl.sendMessage(kafkaMessage);
+
+        verify(reactiveKafkaProducerTemplate).send(kafkaMessage);
+
     }
 }

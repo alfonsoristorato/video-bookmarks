@@ -6,6 +6,8 @@ import com.alfonsoristorato.common.kafka.service.KafkaService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,6 +17,7 @@ public class SaveBookmarkService {
     private final KafkaService kafkaService;
     private final KafkaTopicConfigProperties kafkaTopicConfigProperties;
     private final ObjectMapper mapper;
+    private final Logger logger = LoggerFactory.getLogger(SaveBookmarkService.class);
 
     public SaveBookmarkService(KafkaService kafkaService, KafkaTopicConfigProperties kafkaTopicConfigProperties, ObjectMapper mapper) {
         this.kafkaService = kafkaService;
@@ -26,7 +29,7 @@ public class SaveBookmarkService {
         return new SaveBookmarkMessage(accountId, userId, videoId, bookmarkPosition, timestamp);
     }
 
-    private String createJsonMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition, Instant now){
+    private String createJsonMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition, Instant now) {
         try {
             return mapper.writeValueAsString(createMessage(accountId, userId, videoId, bookmarkPosition, now));
         }
@@ -41,6 +44,8 @@ public class SaveBookmarkService {
         Instant now = Instant.now();
         String message = createJsonMessage(accountId, userId, videoId, bookmarkPosition, now);
         ProducerRecord<String, String> kafkaMessage = new ProducerRecord<>(topic, accountId, message);
-        kafkaService.sendMessage(kafkaMessage);
+        kafkaService.sendMessage(kafkaMessage)
+                .doOnError((error) -> logger.error("Kafka message sending failed, exception: ", error))
+                .subscribe();
     }
 }

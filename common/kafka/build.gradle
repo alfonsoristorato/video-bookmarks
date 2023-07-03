@@ -10,6 +10,8 @@ dependencies {
     implementation serviceLibs.spring.kafka
     implementation serviceLibs.reactor
     implementation serviceLibs.hibernate.validator
+    implementation serviceLibs.reactor.kafka
+
 
     testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test
