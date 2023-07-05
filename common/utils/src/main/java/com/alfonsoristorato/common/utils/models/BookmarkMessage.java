@@ -1,8 +1,8 @@
-package com.alfonsoristorato.bookmarksproducer.app.models;
+package com.alfonsoristorato.common.utils.models;
 
 import java.time.Instant;
 
-public record SaveBookmarkMessage(
+public record BookmarkMessage(
         String accountId,
         String userId,
         Integer videoId,

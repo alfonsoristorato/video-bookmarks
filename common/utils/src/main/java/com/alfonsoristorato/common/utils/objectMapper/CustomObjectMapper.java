@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.app.objectMapper;
+package com.alfonsoristorato.common.utils.objectMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

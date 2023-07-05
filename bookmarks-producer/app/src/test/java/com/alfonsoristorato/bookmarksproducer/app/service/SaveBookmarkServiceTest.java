@@ -1,6 +1,6 @@
 package com.alfonsoristorato.bookmarksproducer.app.service;
 
-import com.alfonsoristorato.bookmarksproducer.app.models.SaveBookmarkMessage;
+import com.alfonsoristorato.common.utils.models.BookmarkMessage;
 import com.alfonsoristorato.common.kafka.config.KafkaTopicConfigProperties;
 import com.alfonsoristorato.common.kafka.service.KafkaService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,7 +57,7 @@ public class SaveBookmarkServiceTest {
             ProducerRecord<String,String> kafkaMessage = new ProducerRecord<>("topic",accountId,messageJson);
 
             when(kafkaTopicConfigProperties.bookmarkTopic()).thenReturn("topic");
-            when(objectMapper.writeValueAsString(any(SaveBookmarkMessage.class))).thenReturn(messageJson);
+            when(objectMapper.writeValueAsString(any(BookmarkMessage.class))).thenReturn(messageJson);
             when(kafkaService.sendMessage(any())).thenReturn(Mono.just(senderResult));
 
             saveBookmarkService.sendKafkaMessage(accountId,userId,videoId,bookmarkPosition);
@@ -65,7 +65,7 @@ public class SaveBookmarkServiceTest {
             InOrder inOrder = inOrder(kafkaTopicConfigProperties,objectMapper, kafkaService);
 
             inOrder.verify(kafkaTopicConfigProperties).bookmarkTopic();
-            inOrder.verify(objectMapper).writeValueAsString(new SaveBookmarkMessage(accountId,userId,videoId,bookmarkPosition,now));
+            inOrder.verify(objectMapper).writeValueAsString(new BookmarkMessage(accountId,userId,videoId,bookmarkPosition,now));
             inOrder.verify(kafkaService).sendMessage(kafkaMessage);
         }
     }

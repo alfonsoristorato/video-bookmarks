@@ -1,6 +1,6 @@
 package com.alfonsoristorato.bookmarksproducer.app.service;
 
-import com.alfonsoristorato.bookmarksproducer.app.models.SaveBookmarkMessage;
+import com.alfonsoristorato.common.utils.models.BookmarkMessage;
 import com.alfonsoristorato.common.kafka.config.KafkaTopicConfigProperties;
 import com.alfonsoristorato.common.kafka.service.KafkaService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,8 +25,8 @@ public class SaveBookmarkService {
         this.mapper = mapper;
     }
 
-    private SaveBookmarkMessage createMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition, Instant timestamp) {
-        return new SaveBookmarkMessage(accountId, userId, videoId, bookmarkPosition, timestamp);
+    private BookmarkMessage createMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition, Instant timestamp) {
+        return new BookmarkMessage(accountId, userId, videoId, bookmarkPosition, timestamp);
     }
 
     private String createJsonMessage(String accountId, String userId, Integer videoId, Integer bookmarkPosition, Instant now) {

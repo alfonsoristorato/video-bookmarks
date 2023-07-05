@@ -6,6 +6,7 @@ reactor                                     = "3.5.7"
 hibernate-validator                         = "8.0.1.Final"
 commons-lang3                               = "3.12.0"
 reactor-kafka                               = "1.3.18"
+jackson-databind                            = "2.15.2"
 
 [libraries]
 spring-boot-starter                         = { module = "org.springframework.boot:spring-boot-starter" }
@@ -17,6 +18,8 @@ reactor                                     = { module = "io.projectreactor:reac
 hibernate-validator                         = { module = "org.hibernate.validator:hibernate-validator", version.ref = "hibernate-validator" }
 commons-lang3                               = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 reactor-kafka                               = { module = "io.projectreactor.kafka:reactor-kafka", version.ref = "reactor-kafka" }
+jackson-databind                            = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref ="jackson-databind"}
+
 
 [plugins]
 spring-boot                                 = { id = "org.springframework.boot", version.ref = "spring-boot"}
