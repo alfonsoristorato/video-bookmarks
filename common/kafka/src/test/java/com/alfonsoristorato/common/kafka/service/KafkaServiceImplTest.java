@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
+import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.SenderResult;
@@ -23,6 +24,9 @@ public class KafkaServiceImplTest {
 
     @Mock
     private ReactiveKafkaProducerTemplate<String, String> reactiveKafkaProducerTemplate;
+
+    @Mock
+    private ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate;
 
     @Mock
     private KafkaTopicConfigProperties kafkaTopicConfigProperties;
@@ -61,6 +65,14 @@ public class KafkaServiceImplTest {
         kafkaServiceImpl.sendMessage(kafkaMessage);
 
         verify(reactiveKafkaProducerTemplate).send(kafkaMessage);
+
+    }
+
+    @Test
+    void consumeMessages_callsReactiveKafkaConsumerTemplate() {
+        kafkaServiceImpl.consumeMessages();
+
+        verify(reactiveKafkaConsumerTemplate).receive();
 
     }
 }
