@@ -9,7 +9,6 @@ dependencies {
     implementation project(":common:signature-verifier")
 
     implementation serviceLibs.spring.boot.starter
-    implementation serviceLibs.spring.boot.starter.actuator
     implementation serviceLibs.spring.boot.starter.web
     implementation serviceLibs.spring.boot.starter.webflux
     implementation serviceLibs.spring.kafka

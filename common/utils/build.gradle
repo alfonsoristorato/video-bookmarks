@@ -7,6 +7,7 @@ dependencies {
     implementation serviceLibs.spring.boot.starter
     implementation serviceLibs.spring.boot.starter.web
     implementation serviceLibs.commons.lang3
+    implementation serviceLibs.spring.boot.starter.actuator
 
     testImplementation testLibs.assertj.core
     testImplementation testLibs.spring.boot.starter.test

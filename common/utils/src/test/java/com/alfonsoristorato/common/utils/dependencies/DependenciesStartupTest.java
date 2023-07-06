@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.app.dependencies;
+package com.alfonsoristorato.common.utils.dependencies;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

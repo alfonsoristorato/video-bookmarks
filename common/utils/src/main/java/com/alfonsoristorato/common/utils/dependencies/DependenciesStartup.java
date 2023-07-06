@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.app.dependencies;
+package com.alfonsoristorato.common.utils.dependencies;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
