@@ -1,0 +1,15 @@
+plugins {
+    alias serviceLibs.plugins.spring.boot
+    alias serviceLibs.plugins.spring.dependency.management
+}
+
+dependencies {
+    implementation serviceLibs.spring.boot.starter
+    implementation serviceLibs.spring.data.cassandra
+    implementation serviceLibs.reactor
+
+}
+
+test {
+    useJUnitPlatform()
+}

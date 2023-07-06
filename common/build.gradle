@@ -1,5 +1,6 @@
 tasks.register('test-all')  {
     dependsOn ':common:kafka:test',
             ':common:utils:test',
-            ':common:signature-verifier:test'
+            ':common:signature-verifier:test',
+            ':common:cassandra:test'
 }
