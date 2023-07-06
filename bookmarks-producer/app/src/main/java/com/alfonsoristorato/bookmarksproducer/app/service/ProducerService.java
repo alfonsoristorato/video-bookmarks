@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 
 @Service
-public class SaveBookmarkService {
+public class ProducerService {
     private final KafkaService kafkaService;
     private final KafkaTopicConfigProperties kafkaTopicConfigProperties;
     private final ObjectMapper mapper;
-    private final Logger logger = LoggerFactory.getLogger(SaveBookmarkService.class);
+    private final Logger logger = LoggerFactory.getLogger(ProducerService.class);
 
-    public SaveBookmarkService(KafkaService kafkaService, KafkaTopicConfigProperties kafkaTopicConfigProperties, ObjectMapper mapper) {
+    public ProducerService(KafkaService kafkaService, KafkaTopicConfigProperties kafkaTopicConfigProperties, ObjectMapper mapper) {
         this.kafkaService = kafkaService;
         this.kafkaTopicConfigProperties = kafkaTopicConfigProperties;
         this.mapper = mapper;

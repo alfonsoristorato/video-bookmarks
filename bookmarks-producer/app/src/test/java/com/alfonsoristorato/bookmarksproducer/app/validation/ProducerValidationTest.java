@@ -13,21 +13,21 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-public class SaveBookmarkValidationTest {
+public class ProducerValidationTest {
     @InjectMocks
-    private SaveBookmarkValidation saveBookmarkValidation;
+    private ProducerValidation producerValidation;
 
     @ParameterizedTest
     @ValueSource(strings = {"1", "20", "2100"})
     void validateRequest_shouldNotThrowBadRequestExceptionIfVideoIdIsAValidNumberAndAProperBookmarkBodyIsPassed(String videoId) {
-        assertThatNoException().isThrownBy(() -> saveBookmarkValidation.validateRequest(videoId, new BookmarkBody(10)));
+        assertThatNoException().isThrownBy(() -> producerValidation.validateRequest(videoId, new BookmarkBody(10)));
 
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "notANumber", " 0 1", " 1", "1 "})
     void validateRequest_shouldThrowBadRequestExceptionIfVideoIdIsNotAValidNumber(String videoId) {
-        assertThatThrownBy(() -> saveBookmarkValidation.validateRequest(videoId, new BookmarkBody(10)))
+        assertThatThrownBy(() -> producerValidation.validateRequest(videoId, new BookmarkBody(10)))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("videoId needs to be a valid number.");
 
@@ -35,7 +35,7 @@ public class SaveBookmarkValidationTest {
 
     @Test
     void validateRequest_shouldThrowBadRequestExceptionIfBookmarkBodyPropertyIsInvalid() {
-        assertThatThrownBy(() -> saveBookmarkValidation.validateRequest("1", new BookmarkBody(-10)))
+        assertThatThrownBy(() -> producerValidation.validateRequest("1", new BookmarkBody(-10)))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("bookmarkPosition needs to be a number.");
 

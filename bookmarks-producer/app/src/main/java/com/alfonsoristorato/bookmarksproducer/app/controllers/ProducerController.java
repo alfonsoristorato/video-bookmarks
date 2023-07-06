@@ -1,8 +1,8 @@
 package com.alfonsoristorato.bookmarksproducer.app.controllers;
 
 import com.alfonsoristorato.bookmarksproducer.app.models.BookmarkBody;
-import com.alfonsoristorato.bookmarksproducer.app.service.SaveBookmarkService;
-import com.alfonsoristorato.bookmarksproducer.app.validation.SaveBookmarkValidation;
+import com.alfonsoristorato.bookmarksproducer.app.service.ProducerService;
+import com.alfonsoristorato.bookmarksproducer.app.validation.ProducerValidation;
 import com.alfonsoristorato.common.signatureverifier.config.SignatureVerifierConfigProperties;
 import com.alfonsoristorato.common.signatureverifier.service.SignatureVerifierService;
 import com.alfonsoristorato.common.utils.validation.HeaderValidation;
@@ -15,22 +15,22 @@ import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping(path = "/bookmark")
-public class SaveBookmarkController {
+public class ProducerController {
 
-    private final SaveBookmarkValidation saveBookmarkValidation;
+    private final ProducerValidation producerValidation;
 
     private final HeaderValidation headerValidation;
 
-    private final SaveBookmarkService saveBookmarkService;
+    private final ProducerService producerService;
 
     private final SignatureVerifierService signatureVerifierService;
 
     private final SignatureVerifierConfigProperties signatureVerifierConfigProperties;
 
-    public SaveBookmarkController(SaveBookmarkValidation saveBookmarkValidation, HeaderValidation headerValidation, SaveBookmarkService saveBookmarkService, SignatureVerifierService signatureVerifierService, SignatureVerifierConfigProperties signatureVerifierConfigProperties) {
-        this.saveBookmarkValidation = saveBookmarkValidation;
+    public ProducerController(ProducerValidation producerValidation, HeaderValidation headerValidation, ProducerService producerService, SignatureVerifierService signatureVerifierService, SignatureVerifierConfigProperties signatureVerifierConfigProperties) {
+        this.producerValidation = producerValidation;
         this.headerValidation = headerValidation;
-        this.saveBookmarkService = saveBookmarkService;
+        this.producerService = producerService;
         this.signatureVerifierService = signatureVerifierService;
         this.signatureVerifierConfigProperties = signatureVerifierConfigProperties;
     }
@@ -43,7 +43,7 @@ public class SaveBookmarkController {
     //timeStamp
 
     @PutMapping(path = "/{videoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Void>> saveBookmark(
+    public Mono<ResponseEntity<Void>> produceBookmark(
             @PathVariable String videoId,
             @RequestBody BookmarkBody bookmarkBody,
             @RequestHeader String accountId,
@@ -51,11 +51,11 @@ public class SaveBookmarkController {
             @RequestHeader String signature
     ) {
         headerValidation.validateHeaders(accountId, userId, signature);
-        saveBookmarkValidation.validateRequest(videoId, bookmarkBody);
+        producerValidation.validateRequest(videoId, bookmarkBody);
         return signatureVerifierService
                 .verifySignature(signatureVerifierConfigProperties.verifyPath(), signature)
                 .flatMap(verifyResponseSuccess -> {
-                    saveBookmarkService.sendKafkaMessage(accountId, userId, Integer.parseInt(videoId), bookmarkBody.bookmarkPosition());
+                    producerService.sendKafkaMessage(accountId, userId, Integer.parseInt(videoId), bookmarkBody.bookmarkPosition());
                     return Mono.just(ResponseEntity.accepted().build());
                 });
     }

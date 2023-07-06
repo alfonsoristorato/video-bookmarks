@@ -21,10 +21,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SaveBookmarkServiceTest {
+public class ProducerServiceTest {
 
     @InjectMocks
-    private SaveBookmarkService saveBookmarkService;
+    private ProducerService producerService;
 
     @Mock
     private KafkaService kafkaService;
@@ -60,7 +60,7 @@ public class SaveBookmarkServiceTest {
             when(objectMapper.writeValueAsString(any(BookmarkMessage.class))).thenReturn(messageJson);
             when(kafkaService.sendMessage(any())).thenReturn(Mono.just(senderResult));
 
-            saveBookmarkService.sendKafkaMessage(accountId,userId,videoId,bookmarkPosition);
+            producerService.sendKafkaMessage(accountId,userId,videoId,bookmarkPosition);
 
             InOrder inOrder = inOrder(kafkaTopicConfigProperties,objectMapper, kafkaService);
 

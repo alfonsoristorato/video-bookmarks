@@ -7,7 +7,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SaveBookmarkValidation {
+public class ProducerValidation {
 
     public void validateRequest(String videoId, BookmarkBody bookmarkBody) {
         if (!NumberUtils.isCreatable(videoId)) {
