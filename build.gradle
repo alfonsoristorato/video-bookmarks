@@ -21,5 +21,6 @@ subprojects {
 
 tasks.register('test-all')  {
     dependsOn ':bookmarks-producer:test-all',
+            ':bookmarks-persister:test-all',
             ':common:test-all'
 }

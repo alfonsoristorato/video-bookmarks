@@ -6,19 +6,12 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 
 @PrimaryKeyClass
-public class BookmarkPrimaryKey {
-    @PrimaryKeyColumn(ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private String accountId;
-
-    @PrimaryKeyColumn(ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
-    private String userId;
-
-    @PrimaryKeyColumn(ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
-    private String videoId;
-
-    public BookmarkPrimaryKey(String accountId, String userId, String videoId) {
-        this.accountId = accountId;
-        this.userId = userId;
-        this.videoId = videoId;
-    }
+public record BookmarkPrimaryKey(
+        @PrimaryKeyColumn(ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+        String accountId,
+        @PrimaryKeyColumn(ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
+        String userId,
+        @PrimaryKeyColumn(ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
+        String videoId
+) {
 }
