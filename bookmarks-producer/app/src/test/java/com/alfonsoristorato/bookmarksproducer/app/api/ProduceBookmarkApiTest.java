@@ -127,7 +127,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
     class produceBookmarkUnhappyPathHeaderFormatValidationTests {
         @ParameterizedTest
         @DisplayName("invalid format or missing accountId takes precedence over following invalid headers")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.produceBookmarkApiTest#invalidFormatAndMissingAccountIdHeaders")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidFormatAndMissingAccountIdHeaders")
         void produceBookmark_withInvalidFormatOrMissingAccountIdRegardlessOfFollowingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("accountId") != null
                     ? "Invalid 'accountId' format provided."
@@ -148,7 +148,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
 
         @ParameterizedTest
         @DisplayName("invalid format or missing userId takes precedence over following invalid headers")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.produceBookmarkApiTest#invalidFormatAndMissingUserIdHeaders")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidFormatAndMissingUserIdHeaders")
         void produceBookmark_withInvalidFormatOrMissingUserIdOfFollowingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("userId") != null
                     ? "Invalid 'userId' format provided."
@@ -169,7 +169,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
 
         @ParameterizedTest
         @DisplayName("invalid format or missing signature")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.produceBookmarkApiTest#invalidFormatAndMissingSignatureHeaders")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidFormatAndMissingSignatureHeaders")
         void produceBookmark_withInvalidFormatOrMissingSignatureAndValidRemainingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("signature") != null
                     ? "Invalid 'signature' format provided."
@@ -213,7 +213,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
 
         @ParameterizedTest
         @DisplayName("invalid bookmarkBody properties")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.produceBookmarkApiTest#invalidBookmarkBodyProperties")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidBookmarkBodyProperties")
         void produceBookmark_withInvalidBookmarkBodyProperties(BookmarkBody bookmarkBody) {
             String responseDetails = bookmarkBody.bookmarkPosition() != null
                     ? "bookmarkPosition needs to be a number."

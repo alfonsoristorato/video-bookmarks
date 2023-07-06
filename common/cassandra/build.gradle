@@ -7,7 +7,13 @@ dependencies {
     implementation serviceLibs.spring.boot.starter
     implementation serviceLibs.spring.data.cassandra
     implementation serviceLibs.reactor
+    implementation serviceLibs.hibernate.validator
+    // TODO: below needed to have access to jakarta.el.ExpressionFactory, find a better way
+    implementation serviceLibs.spring.boot.starter.web
 
+
+    testImplementation testLibs.assertj.core
+    testImplementation testLibs.spring.boot.starter.test
 }
 
 test {
