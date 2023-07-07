@@ -1,0 +1,27 @@
+server:
+  port: 8080
+management:
+  endpoint:
+    health:
+      show-components: always
+  health:
+    diskspace:
+      enabled: false
+    ping:
+      enabled: false
+spring:
+  kafka:
+    bootstrap-servers: localhost:29092, localhost:39092
+  cassandra:
+    keyspace-name: video_bookmarks
+    port: 9042
+    local-datacenter: datacenter1
+    contact-points: localhost
+    schema-action: none
+downstreams:
+  kafka:
+    topics:
+      bookmark: "bookmarks-producer"
+      health: "health-indicator"
+
+
