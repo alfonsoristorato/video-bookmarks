@@ -1,6 +1,8 @@
-package com.alfonsoristorato.bookmarksproducer.app.api;
+package com.alfonsoristorato.bookmarksproducer.app.e2e;
 
 import com.alfonsoristorato.bookmarksproducer.app.models.BookmarkBody;
+import com.alfonsoristorato.common.utils.models.BookmarkMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -8,16 +10,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import reactor.kafka.receiver.ReceiverRecord;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.blankOrNullString;
 import static org.hamcrest.Matchers.equalTo;
-
-public class ProduceBookmarkApiTest extends ApiTestConfig {
+public class ProduceBookmarkApiTest extends E2ETests {
 
     @Autowired
     private HttpClient client;
@@ -109,8 +113,8 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
     class produceBookmarkHappyPathTests {
 
         @Test
-        @DisplayName("correct params")
-        void produceBookmark_withCorrectParams() {
+        @DisplayName("correct params calls writes to Kafka")
+        void produceBookmark_withCorrectParams() throws JsonProcessingException {
             client.given()
                     .headers(VALID_HEADERS)
                     .body(BOOKMARK_BODY)
@@ -119,6 +123,19 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
                     .then()
                     .statusCode(202)
                     .body(blankOrNullString());
+
+            ReceiverRecord<String, String> receiverRecord = kafkaConsumerTemplate.receive().blockFirst();
+            assertThat(receiverRecord).isNotNull();
+            BookmarkMessage bookmarkMessage = new BookmarkMessage(
+                    VALID_HEADERS.get("accountId"),
+                    VALID_HEADERS.get("userId"),
+                    1,
+                    BOOKMARK_BODY.bookmarkPosition(),
+                    Instant.parse("2023-12-22T10:15:30.100Z")
+                    );
+
+            assertThat(receiverRecord.value()).isEqualTo(mapper.writeValueAsString(bookmarkMessage));
+
         }
     }
 
@@ -127,7 +144,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
     class produceBookmarkUnhappyPathHeaderFormatValidationTests {
         @ParameterizedTest
         @DisplayName("invalid format or missing accountId takes precedence over following invalid headers")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidFormatAndMissingAccountIdHeaders")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.e2e.ProduceBookmarkApiTest#invalidFormatAndMissingAccountIdHeaders")
         void produceBookmark_withInvalidFormatOrMissingAccountIdRegardlessOfFollowingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("accountId") != null
                     ? "Invalid 'accountId' format provided."
@@ -148,7 +165,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
 
         @ParameterizedTest
         @DisplayName("invalid format or missing userId takes precedence over following invalid headers")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidFormatAndMissingUserIdHeaders")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.e2e.ProduceBookmarkApiTest#invalidFormatAndMissingUserIdHeaders")
         void produceBookmark_withInvalidFormatOrMissingUserIdOfFollowingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("userId") != null
                     ? "Invalid 'userId' format provided."
@@ -169,7 +186,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
 
         @ParameterizedTest
         @DisplayName("invalid format or missing signature")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidFormatAndMissingSignatureHeaders")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.e2e.ProduceBookmarkApiTest#invalidFormatAndMissingSignatureHeaders")
         void produceBookmark_withInvalidFormatOrMissingSignatureAndValidRemainingHeaders(Map<String, String> headers) {
             String responseDetails = headers.get("signature") != null
                     ? "Invalid 'signature' format provided."
@@ -213,7 +230,7 @@ public class ProduceBookmarkApiTest extends ApiTestConfig {
 
         @ParameterizedTest
         @DisplayName("invalid bookmarkBody properties")
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.ProduceBookmarkApiTest#invalidBookmarkBodyProperties")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.e2e.ProduceBookmarkApiTest#invalidBookmarkBodyProperties")
         void produceBookmark_withInvalidBookmarkBodyProperties(BookmarkBody bookmarkBody) {
             String responseDetails = bookmarkBody.bookmarkPosition() != null
                     ? "bookmarkPosition needs to be a number."

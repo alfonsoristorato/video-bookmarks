@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.app.api;
+package com.alfonsoristorato.bookmarksproducer.app.e2e;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

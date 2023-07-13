@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.app.api;
+package com.alfonsoristorato.bookmarksproducer.app.e2e;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HealthApiTest extends ApiTestConfig {
+public class HealthApiTest extends E2ETests {
 
     @Autowired
     private HttpClient client;

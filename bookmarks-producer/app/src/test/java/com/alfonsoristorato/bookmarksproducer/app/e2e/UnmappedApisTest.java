@@ -1,4 +1,4 @@
-package com.alfonsoristorato.bookmarksproducer.app.api;
+package com.alfonsoristorato.bookmarksproducer.app.e2e;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class UnmappedApisTest extends ApiTestConfig {
+public class UnmappedApisTest extends E2ETests {
 
     @Autowired
     private HttpClient client;
@@ -34,7 +34,7 @@ public class UnmappedApisTest extends ApiTestConfig {
     class unmappedApisTests {
 
         @ParameterizedTest
-        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.api.UnmappedApisTest#unmappedApis")
+        @MethodSource("com.alfonsoristorato.bookmarksproducer.app.e2e.UnmappedApisTest#unmappedApis")
         @DisplayName("unmapped apis calls")
         void unmappedApis(String unmappedApi, String method) {
             String encodedUnmappedApi = UriUtils.encodePath(unmappedApi, StandardCharsets.UTF_8);
