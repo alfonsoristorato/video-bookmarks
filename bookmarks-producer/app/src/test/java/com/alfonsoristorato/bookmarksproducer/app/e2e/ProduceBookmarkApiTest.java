@@ -10,7 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import reactor.kafka.receiver.ReceiverRecord;
+import reactor.test.StepVerifier;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.blankOrNullString;
 import static org.hamcrest.Matchers.equalTo;
+import static reactor.test.StepVerifier.DEFAULT_VERIFY_TIMEOUT;
+
 public class ProduceBookmarkApiTest extends E2ETests {
 
     @Autowired
@@ -124,17 +126,19 @@ public class ProduceBookmarkApiTest extends E2ETests {
                     .statusCode(202)
                     .body(blankOrNullString());
 
-            ReceiverRecord<String, String> receiverRecord = kafkaConsumerTemplate.receive().blockFirst();
-            assertThat(receiverRecord).isNotNull();
             BookmarkMessage bookmarkMessage = new BookmarkMessage(
                     VALID_HEADERS.get("accountId"),
                     VALID_HEADERS.get("userId"),
                     1,
                     BOOKMARK_BODY.bookmarkPosition(),
                     Instant.parse("2023-12-22T10:15:30.100Z")
-                    );
+            );
+            String bookmarkMessageString = mapper.writeValueAsString(bookmarkMessage);
 
-            assertThat(receiverRecord.value()).isEqualTo(mapper.writeValueAsString(bookmarkMessage));
+            StepVerifier.create(kafkaConsumerTemplate.receiveAutoAck())
+                    .assertNext(receiverRecord -> assertThat(receiverRecord.value()).isEqualTo(bookmarkMessageString))
+                    .thenCancel()
+                    .verify(DEFAULT_VERIFY_TIMEOUT);
 
         }
     }
@@ -300,7 +304,7 @@ public class ProduceBookmarkApiTest extends E2ETests {
         @Test
         @DisplayName("signatureVerifier downstream down")
         void produceBookmark_signatureVerifierDownstreamDown() {
-            client.changeWiremockMapping(WIREMOCK_VERIFY,500);
+            client.changeWiremockMapping(WIREMOCK_VERIFY, 500);
 
             client.given()
                     .headers(VALID_HEADERS)
